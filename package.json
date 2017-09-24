@@ -16,7 +16,8 @@
     "mongoose": "*",
     "nodemon": "^1.11.0",
     "passport": "*",
-    "passport-jwt": "*"
+    "passport-jwt": "*",
+    "socket.io": "^2.0.3"
   },
   "author": "Marion Minayo",
   "license": "ISC"

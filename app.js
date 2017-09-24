@@ -6,6 +6,11 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const passport = require('passport');
 const config = require('./config/database');
+//initialising app variable with express
+const app = express();
+
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 //connecting to db
 mongoose.connect(config.database);
@@ -14,6 +19,24 @@ mongoose.connect(config.database);
 mongoose.connection.on('connected', () =>{
     console.log('connected to database:'+config.database);
 });
+//socket io
+io.on('connection', (socket)=>{
+  console.log('a user connected');
+
+  //test messages
+  socket.on('event1', (data)=>{
+      console.log(data.msg);
+  });
+  socket.emit('event2', {
+      msg: 'server to client, do you read? Over.'
+  });
+  socket.on('event3', (data)=>{
+      console.log(data.msg);
+      socket.emit('event4',{
+          msg: 'Loud and clear:)'
+      });
+  });
+});
 
 //on error
 mongoose.connection.on('error', (err) =>{
@@ -21,8 +44,7 @@ mongoose.connection.on('error', (err) =>{
 });
 
 
-//initialising app variable with express
-const app = express();
+
 
 const users = require('./routes/users');
 
@@ -36,6 +58,10 @@ app.use(express.static(path.join(__dirname, 'client')));
 app.get('/',(req, res)=>{
     res.send('invalid endpoint')
 });
+
+app.get('*',function(req, res){
+    res.sendFile(path.join(__dirname, 'client/index.html'))
+})
 
 //start server
 app.listen(port, () =>{
