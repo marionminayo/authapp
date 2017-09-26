@@ -24,17 +24,10 @@ io.on('connection', (socket)=>{
   console.log('a user connected');
 
   //test messages
-  socket.on('event1', (data)=>{
-      console.log(data.msg);
-  });
-  socket.emit('event2', {
-      msg: 'server to client, do you read? Over.'
-  });
-  socket.on('event3', (data)=>{
-      console.log(data.msg);
-      socket.emit('event4',{
-          msg: 'Loud and clear:)'
-      });
+  socket.on('send-message', (data)=>{
+      console.log(data.text);
+      io.emit('message-received', data);
+  
   });
 });
 
@@ -43,13 +36,16 @@ mongoose.connection.on('error', (err) =>{
     console.log('error:'+err);
 });
 
+http.listen(3000, function(){
+  console.log('listening on *:3000');
+});
 
 
 
 const users = require('./routes/users');
 
 //initialize port variable
-const port = 3000;
+const port = process.env.PORT || 8080;
 
 //set up client side files(static files)
 app.use(express.static(path.join(__dirname, 'client')));
@@ -64,9 +60,9 @@ app.get('*',function(req, res){
 })
 
 //start server
-app.listen(port, () =>{
-    console.log('started server on port'+port);
-});
+//app.listen(port, () =>{
+   // console.log('started server on port'+port);
+//});
 
 //to allow access from different domains
 app.use(cors());
