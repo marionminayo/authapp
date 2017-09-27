@@ -36,9 +36,7 @@ mongoose.connection.on('error', (err) =>{
     console.log('error:'+err);
 });
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
-});
+
 
 
 
@@ -46,6 +44,10 @@ const users = require('./routes/users');
 
 //initialize port variable
 const port = process.env.PORT || 8080;
+
+http.listen($PORT, function(){
+  console.log('listening on *:PORT');
+});
 
 //set up client side files(static files)
 app.use(express.static(path.join(__dirname, 'client')));
